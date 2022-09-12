@@ -48,7 +48,7 @@ sensor:
 ### Future
 
 * Link Status (up/down)
-* MAC address (unique_id for sensors, d[0] from http://10.1.70.7/ms/1/0x103/GET)
+* MAC address (unique_id for sensors, d[0] from http://192.168.254.254/ms/1/0x103/GET)
 
 * Ethernet Tx/Rx status (good packets, bad packets, dropped packets)
 * Adapter Name from selected list
