@@ -1,4 +1,4 @@
-# goCoax MoCA for Home Assistant (COMING SOON)
+11;rgb:2222/2222/2222># goCoax MoCA for Home Assistant (COMING SOON)
 
 ![goCoax Logo](https://raw.githubusercontent.com/rsnodgrass/hass-gocoax/main/img/logo.png)
 
@@ -38,13 +38,15 @@ sensor:
   - platform: gocoax
     username: admin
     password: gocoax
-    hosts:
-      - 198.168.254.254
-      - 192.168.1.12
+    host: 192.168.1.12
 ```
 
 ### Example Lovelace UI
 
+
+## Contributions Wanted
+
+* config_flow for adding host IPs + username/password
 
 ## See Also
 
