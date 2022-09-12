@@ -35,3 +35,23 @@ info a JSON structure. For example, something like the following:
   }
 }
 ```
+
+
+Example API:
+
+```python
+import json
+import httpx
+
+async def async_gocoax_status(host, user, password):
+      status = {
+        "ip": host
+      }
+
+      async with httpx.AsyncClient(auth=(user, password)) as client:
+      	    url = f"https:{host}/ms/0/0x16"
+	    resp = await client.get(url)
+	    # ...
+
+      return jsons.dump(status)
+```
