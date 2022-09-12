@@ -1,0 +1,3 @@
+DOMAIN = 'gocoax'
+
+DEFAULT_TIMEOUT = 15

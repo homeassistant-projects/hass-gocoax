@@ -1,0 +1,13 @@
+{
+    "domain": "gocoax",
+    "name": "goCoax MoCA Adapters",
+    "version": "0.0.1",
+    "documentation": "https://github.com/rsnodgrass/hass-gocoax/",
+    "issue_tracker": "https://github.com/rsnodgrass/hass-gocoax/issues",
+    "requirements": [
+	"httpx>=0.16.1"
+    ],
+    "dependencies": [],
+    "codeowners": ["@rsnodgrass"],
+    "iot_class": "local_polling"
+}
