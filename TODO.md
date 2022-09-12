@@ -1,6 +1,7 @@
 TODO: Python library that connects to an adapter and converts the binary format data
 info a JSON structure. For example, something like the following:
 
+```json
 {
   "mac": "94:cc:04:12:01:0a",
   "ip": "192.168.254.254",
@@ -34,3 +35,4 @@ info a JSON structure. For example, something like the following:
      ...
   }
 }
+```
