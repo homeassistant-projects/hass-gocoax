@@ -43,10 +43,20 @@ sensor:
 
 ### Example Lovelace UI
 
+## Sensors Supported
 
-## Contributions Wanted
+### Future
+
+* Link Status (up/down)
+* MAC address (unique_id for sensors, d[0] from http://10.1.70.7/ms/1/0x103/GET)
+
+* Ethernet Tx/Rx status (good packets, bad packets, dropped packets)
+* Adapter Name from selected list
+
+### Contributions Wanted
 
 * config_flow for adding host IPs + username/password
+* parsing PHY Rates table for the entire mesh network (to get inter-MoCA adapter speeds) from /phyRates.html
 
 ## See Also
 
