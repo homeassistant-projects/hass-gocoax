@@ -1,4 +1,4 @@
-11;rgb:2222/2222/2222># goCoax MoCA for Home Assistant (COMING SOON)
+# goCoax MoCA for Home Assistant (COMING SOON)
 
 ![goCoax Logo](https://raw.githubusercontent.com/rsnodgrass/hass-gocoax/main/img/logo.png)
 
