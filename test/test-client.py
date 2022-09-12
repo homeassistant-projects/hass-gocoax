@@ -20,7 +20,9 @@ async def async_gocoax_status(host, user='admin', password='gocoax'):
 
             url = f"http://{host}/ms/0/0x16"
             print(f"Fetching {url}")
-            r = await client.post(url, data=json.dumps({"data":[2]}))
+            # very funky handling of POST data by goCoax
+            headers = [(b"content-type", b"application/x-www-form-urlencoded")]
+            r = await client.post(url, data='{"data":[2]}', headers=headers)
             print(r)
             # ...
 
