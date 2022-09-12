@@ -20,19 +20,18 @@ info a JSON structure. For example, something like the following:
           "dropped": 0
        },
   },
-  "network": {
-      0: {
+  "network":
+      "0": {
          "moca_ver": "2.5"
       },
-      1: {
+      "1": {
          "moca_ver": "2.5"
       },
-      2: {
+      "2": {
          "moca_ver": "2.0"
       },
   },
   "link_phy_rates": {
-     ...
   }
 }
 ```
