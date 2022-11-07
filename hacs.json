@@ -1,5 +1,4 @@
 {
   "name": "goCoax MoCA Adapters",
-  "domains": ["sensor"],
   "render_readme": true
 }
