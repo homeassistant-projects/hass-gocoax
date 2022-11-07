@@ -1,3 +1,3 @@
-DOMAIN = 'gocoax'
+DOMAIN = "gocoax"
 
 DEFAULT_TIMEOUT = 15
