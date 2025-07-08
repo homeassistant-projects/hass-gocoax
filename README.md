@@ -1,5 +1,8 @@
 # goCoax MoCA for Home Assistant (COMING SOON)
 
+
+## NOT YET IMPLEMENTED - SKELETON ONLY - FEEL FREE TO CONTRIBUTE
+
 ![goCoax Logo](https://raw.githubusercontent.com/rsnodgrass/hass-gocoax/main/img/logo.png)
 
 Sensors for monitoring [goCoax](https://gocoax.com/) MoCA adapters and the associated mesh networks.
