@@ -42,6 +42,16 @@ class PhyRate:
 
 
 @dataclass
+class SignalQuality:
+    """Signal quality metrics for MoCA connection."""
+
+    snr: float | None = None  # Signal-to-noise ratio in dB
+    tx_power: float | None = None  # TX power in dBm
+    rx_power: float | None = None  # RX power in dBm
+    bit_loading: int | None = None  # bits per symbol
+
+
+@dataclass
 class AdapterStatus:
     """Complete status of a goCoax MoCA adapter."""
 
@@ -57,6 +67,13 @@ class AdapterStatus:
     phy_rates: list[PhyRate] = field(default_factory=list)
     node_id: int = 0
     network_controller: bool = False  # True if this node is the NC
+    # new fields for enhanced monitoring
+    frequency_band: str | None = None  # e.g., "D-Low", "D-High", "Extended-D"
+    lof: int | None = None  # Lowest Operating Frequency in MHz
+    encryption_enabled: bool | None = None  # MoCA privacy/encryption status
+    signal_quality: SignalQuality = field(default_factory=SignalQuality)
+    channel_count: int | None = None  # number of bonded channels
+    nc_node_id: int | None = None  # network controller node ID
 
     @property
     def peer_count(self) -> int:
@@ -74,7 +91,18 @@ class AdapterStatus:
             "firmware_version": self.firmware_version,
             "model": self.model,
             "node_id": self.node_id,
+            "nc_node_id": self.nc_node_id,
             "network_controller": self.network_controller,
+            "frequency_band": self.frequency_band,
+            "lof": self.lof,
+            "channel_count": self.channel_count,
+            "encryption_enabled": self.encryption_enabled,
+            "signal_quality": {
+                "snr": self.signal_quality.snr,
+                "tx_power": self.signal_quality.tx_power,
+                "rx_power": self.signal_quality.rx_power,
+                "bit_loading": self.signal_quality.bit_loading,
+            },
             "packets": {
                 "tx": {
                     "ok": self.packets.tx.ok,

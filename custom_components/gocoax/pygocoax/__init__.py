@@ -14,6 +14,7 @@ from .models import (
     NetworkPeer,
     PacketStats,
     PhyRate,
+    SignalQuality,
 )
 
 __all__ = [
@@ -23,6 +24,7 @@ __all__ = [
     "NetworkPeer",
     "PacketStats",
     "PhyRate",
+    "SignalQuality",
     "GoCoaxError",
     "GoCoaxAuthError",
     "GoCoaxConnectionError",
