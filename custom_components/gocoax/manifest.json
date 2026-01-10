@@ -1,7 +1,7 @@
 {
   "domain": "gocoax",
   "name": "goCoax MoCA Adapters",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "documentation": "https://github.com/rsnodgrass/hass-gocoax",
   "issue_tracker": "https://github.com/rsnodgrass/hass-gocoax/issues",
   "requirements": ["aiohttp>=3.9.0"],
