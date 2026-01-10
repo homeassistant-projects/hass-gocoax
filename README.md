@@ -1,7 +1,4 @@
-# goCoax MoCA for Home Assistant (COMING SOON)
-
-
-## NOT YET IMPLEMENTED - SKELETON ONLY - FEEL FREE TO CONTRIBUTE
+# goCoax MoCA for Home Assistant
 
 ![goCoax Logo](https://raw.githubusercontent.com/rsnodgrass/hass-gocoax/main/img/logo.png)
 
@@ -14,7 +11,7 @@ Sensors for monitoring [goCoax](https://gocoax.com/) MoCA adapters and the assoc
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 [![Buy Me A Coffee](https://img.shields.io/badge/buy%20me%20a%20coffee-donate-yellow.svg)](https://buymeacoffee.com/DYks67r)
-[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=WREP29UDAMB6G)  
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=WREP29UDAMB6G)
 
 ## Models Supported
 
@@ -24,9 +21,9 @@ Sensors for monitoring [goCoax](https://gocoax.com/) MoCA adapters and the assoc
 | goCoax       | MA2500C | 2.5        | 2.5 GbE       | YES       | 3.0.5 |
 | goCoax       | WF-803M | 2.5        | 1.0 GbE       | YES       | 1.0.12 |
 | Frontier     | FCA252  | 2.5        | 1.0 GbE       | YES       | |
-| Frontier     | WF-803T / FCA251 | 2.5        | 1.0 GbE       | YES       | |
+| Frontier     | WF-803T / FCA251 | 2.5 | 1.0 GbE    | YES       | |
 
-**NOTE: To ensure sensor data is properly read from the adapters is recommended that you update the goCoax to the LATEST FIRMWARE offered by [goCoax Support](https://www.gocoax.com/support), or one of the firmwares listed in the above table. However, upgrading firmware MAY reset settings on the adapter.**
+**NOTE: To ensure sensor data is properly read from the adapters, it is recommended that you update to the LATEST FIRMWARE offered by [goCoax Support](https://www.gocoax.com/support), or one of the firmwares listed in the above table. However, upgrading firmware MAY reset settings on the adapter.**
 
 ## Installation
 
@@ -34,35 +31,78 @@ Make sure [Home Assistant Community Store (HACS)](https://github.com/custom-comp
 
 ### Configuration
 
-The goCoax MoCA unit IP address must be accessible from the Home Assistant host. Either set a static IP
-on the goCoax admin panel or using static DHCP assignment.
+The goCoax MoCA unit IP address must be accessible from the Home Assistant host. Either set a static IP on the goCoax admin panel or use static DHCP assignment.
 
-```yaml
-sensor:
-  - platform: gocoax
-    username: admin
-    password: gocoax
-    host: 192.168.1.12
-```
+Add via the Home Assistant UI: **Settings > Devices & Services > Add Integration > goCoax**
 
-### Example Lovelace UI
+- **Host**: IP address of your goCoax adapter
+- **Username**: Admin username (default: `admin`)
+- **Password**: Admin password (default: `gocoax`)
 
-## Sensors Supported
+## Sensors
 
-### Future
+### Binary Sensors
 
-* Link Status (up/down)
-* MAC address (unique_id for sensors, d[0] from http://192.168.254.254/ms/1/0x103/GET)
+| Sensor | Description |
+|--------|-------------|
+| Link Status | MoCA network connectivity (on = connected) |
+| Network Controller | Whether this adapter is the MoCA Network Controller |
+| Encryption Enabled | MoCA privacy/encryption status |
 
-* Ethernet Tx/Rx status (good packets, bad packets, dropped packets)
-* Adapter Name from selected list
+### Sensors
 
-### Contributions Wanted
+| Sensor | Description |
+|--------|-------------|
+| MoCA Version | Protocol version (2.0, 2.5) |
+| MAC Address | Adapter's unique MAC address |
+| IP Address | Adapter's IP address |
+| Node ID | MoCA network node identifier |
+| Network Peers | Count of other adapters on the MoCA network |
+| TX Packets | Ethernet transmit packet count (with ok/bad/dropped attributes) |
+| RX Packets | Ethernet receive packet count (with ok/bad/dropped attributes) |
+| PHY TX Rate | Physical layer transmit rate to each peer (Mbps) |
+| PHY RX Rate | Physical layer receive rate from each peer (Mbps) |
+| Frequency Band | Operating frequency band (D-Low, D-High, Extended-D) |
+| Lowest Operating Frequency | LOF in MHz |
+| Channel Count | Number of bonded MoCA channels |
 
-* config_flow for adding host IPs + username/password
-* parsing PHY Rates table for the entire mesh network (to get inter-MoCA adapter speeds) from /phyRates.html
+### Device Info
+
+The following information is shown in the device details:
+
+- Model name
+- Firmware version
+- Configuration URL (link to adapter web UI)
+
+## Options
+
+After initial setup, you can configure:
+
+- **Update Interval**: How often to poll the adapter (10-300 seconds, default: 30)
+
+## Future Enhancements
+
+The following features are planned for future releases:
+
+- **Device Tracker**: Track devices on the MoCA network by MAC address
+- **Configuration Options**: Band selection, encryption toggle (pending API write support)
+- **SNR/Power Level Sensors**: Signal-to-noise ratio and power levels (pending endpoint discovery)
 
 ## See Also
 
-* [Home Assistant LUNOS support discussion](https://community.home-assistant.io/t/gocoax-moca-sensor/xxxx)
-* [Official goCoax Support Forum](https://www.gocoax.com/forum)
+- [Official goCoax Support Forum](https://www.gocoax.com/forum)
+- [goCoax Product Page](https://www.gocoax.com/products)
+
+## Contributing
+
+Contributions are welcome! If you have a goCoax adapter and want to help improve the integration:
+
+1. Enable debug logging to capture raw API responses
+2. Share endpoint data (with MAC addresses redacted) to help improve parsing
+3. Report issues or submit pull requests on GitHub
+
+```yaml
+logger:
+  logs:
+    custom_components.gocoax: debug
+```

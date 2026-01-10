@@ -56,6 +56,9 @@
       "mac_address": {
         "name": "MAC Address"
       },
+      "ip_address": {
+        "name": "IP Address"
+      },
       "node_id": {
         "name": "Node ID"
       },
@@ -67,6 +70,15 @@
       },
       "peer_count": {
         "name": "Network Peers"
+      },
+      "frequency_band": {
+        "name": "Frequency Band"
+      },
+      "lof": {
+        "name": "Lowest Operating Frequency"
+      },
+      "channel_count": {
+        "name": "Channel Count"
       },
       "phy_tx_rate": {
         "name": "PHY TX Rate"
@@ -81,6 +93,9 @@
       },
       "network_controller": {
         "name": "Network Controller"
+      },
+      "encryption_enabled": {
+        "name": "Encryption Enabled"
       }
     }
   }

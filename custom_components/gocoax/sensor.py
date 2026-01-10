@@ -13,7 +13,7 @@ from homeassistant.components.sensor import (
     SensorEntityDescription,
     SensorStateClass,
 )
-from homeassistant.const import EntityCategory, UnitOfDataRate
+from homeassistant.const import EntityCategory, UnitOfDataRate, UnitOfFrequency
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.device_registry import CONNECTION_NETWORK_MAC, DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -60,6 +60,13 @@ SENSOR_DESCRIPTIONS: tuple[GoCoaxSensorEntityDescription, ...] = (
         value_fn=lambda data: data.mac_address,
     ),
     GoCoaxSensorEntityDescription(
+        key="ip_address",
+        translation_key="ip_address",
+        icon="mdi:ip-network",
+        entity_category=EntityCategory.DIAGNOSTIC,
+        value_fn=lambda data: data.ip_address,
+    ),
+    GoCoaxSensorEntityDescription(
         key="node_id",
         translation_key="node_id",
         icon="mdi:identifier",
@@ -96,6 +103,29 @@ SENSOR_DESCRIPTIONS: tuple[GoCoaxSensorEntityDescription, ...] = (
         icon="mdi:lan",
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=lambda data: data.peer_count,
+    ),
+    GoCoaxSensorEntityDescription(
+        key="frequency_band",
+        translation_key="frequency_band",
+        icon="mdi:sine-wave",
+        entity_category=EntityCategory.DIAGNOSTIC,
+        value_fn=lambda data: data.frequency_band,
+    ),
+    GoCoaxSensorEntityDescription(
+        key="lof",
+        translation_key="lof",
+        icon="mdi:waveform",
+        native_unit_of_measurement=UnitOfFrequency.MEGAHERTZ,
+        entity_category=EntityCategory.DIAGNOSTIC,
+        value_fn=lambda data: data.lof,
+    ),
+    GoCoaxSensorEntityDescription(
+        key="channel_count",
+        translation_key="channel_count",
+        icon="mdi:numeric",
+        state_class=SensorStateClass.MEASUREMENT,
+        entity_category=EntityCategory.DIAGNOSTIC,
+        value_fn=lambda data: data.channel_count,
     ),
 )
 

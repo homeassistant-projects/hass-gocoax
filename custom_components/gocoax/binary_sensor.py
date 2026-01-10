@@ -48,6 +48,13 @@ BINARY_SENSOR_DESCRIPTIONS: tuple[GoCoaxBinarySensorEntityDescription, ...] = (
         entity_category=EntityCategory.DIAGNOSTIC,
         value_fn=lambda data: data.network_controller,
     ),
+    GoCoaxBinarySensorEntityDescription(
+        key="encryption_enabled",
+        translation_key="encryption_enabled",
+        icon="mdi:lock",
+        entity_category=EntityCategory.DIAGNOSTIC,
+        value_fn=lambda data: data.encryption_enabled,
+    ),
 )
 
 
