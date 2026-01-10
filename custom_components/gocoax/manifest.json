@@ -1,13 +1,15 @@
 {
-    "domain": "gocoax",
-    "name": "goCoax MoCA Adapters",
-    "version": "0.0.1",
-    "documentation": "https://github.com/rsnodgrass/hass-gocoax/",
-    "issue_tracker": "https://github.com/rsnodgrass/hass-gocoax/issues",
-    "requirements": [
-	"httpx>=0.16.1"
-    ],
-    "dependencies": [],
-    "codeowners": ["@rsnodgrass"],
-    "iot_class": "local_polling"
+  "domain": "gocoax",
+  "name": "goCoax MoCA Adapters",
+  "version": "1.0.0",
+  "documentation": "https://github.com/rsnodgrass/hass-gocoax",
+  "issue_tracker": "https://github.com/rsnodgrass/hass-gocoax/issues",
+  "requirements": ["aiohttp>=3.9.0"],
+  "dependencies": [],
+  "codeowners": ["@rsnodgrass"],
+  "config_flow": true,
+  "homeassistant": "2025.2.0",
+  "integration_type": "device",
+  "iot_class": "local_polling",
+  "loggers": ["custom_components.gocoax"]
 }

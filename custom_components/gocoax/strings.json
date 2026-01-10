@@ -1,0 +1,87 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect to goCoax Adapter",
+        "description": "Enter the connection details for your goCoax MoCA adapter.",
+        "data": {
+          "host": "Host",
+          "username": "Username",
+          "password": "Password"
+        },
+        "data_description": {
+          "host": "IP address or hostname of your goCoax adapter",
+          "username": "Admin username (default: admin)",
+          "password": "Admin password (default: gocoax)"
+        }
+      },
+      "reauth_confirm": {
+        "title": "Re-authenticate goCoax Adapter",
+        "description": "Please re-enter credentials for {host}",
+        "data": {
+          "username": "Username",
+          "password": "Password"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Unable to connect to the goCoax adapter. Verify the IP address and that the adapter is powered on.",
+      "invalid_auth": "Invalid username or password. Default credentials are admin/gocoax.",
+      "unknown": "An unexpected error occurred. Check the logs for details."
+    },
+    "abort": {
+      "already_configured": "This goCoax adapter is already configured.",
+      "reauth_successful": "Re-authentication was successful."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "goCoax Options",
+        "description": "Configure polling options for your goCoax adapter.",
+        "data": {
+          "scan_interval": "Update interval"
+        },
+        "data_description": {
+          "scan_interval": "How often to poll the adapter for updates (seconds)"
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "moca_version": {
+        "name": "MoCA Version"
+      },
+      "mac_address": {
+        "name": "MAC Address"
+      },
+      "node_id": {
+        "name": "Node ID"
+      },
+      "tx_packets": {
+        "name": "TX Packets"
+      },
+      "rx_packets": {
+        "name": "RX Packets"
+      },
+      "peer_count": {
+        "name": "Network Peers"
+      },
+      "phy_tx_rate": {
+        "name": "PHY TX Rate"
+      },
+      "phy_rx_rate": {
+        "name": "PHY RX Rate"
+      }
+    },
+    "binary_sensor": {
+      "link_status": {
+        "name": "Link Status"
+      },
+      "network_controller": {
+        "name": "Network Controller"
+      }
+    }
+  }
+}
