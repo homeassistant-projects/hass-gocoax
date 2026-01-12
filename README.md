@@ -4,14 +4,12 @@
 
 Sensors for monitoring [goCoax](https://gocoax.com/) MoCA adapters and the associated mesh networks.
 
-![beta_badge](https://img.shields.io/badge/maturity-Beta-yellow.png)
 ![release_badge](https://img.shields.io/github/release/rsnodgrass/hass-gocoax.svg)
 ![release_date](https://img.shields.io/github/release-date/rsnodgrass/hass-gocoax.svg)
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/custom-components/hacs)
+![beta_badge](https://img.shields.io/badge/maturity-Beta-yellow.png)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-
 [![Buy Me A Coffee](https://img.shields.io/badge/buy%20me%20a%20coffee-donate-yellow.svg)](https://buymeacoffee.com/DYks67r)
-[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=WREP29UDAMB6G)
 
 ## Models Supported
 
@@ -106,3 +104,9 @@ logger:
   logs:
     custom_components.gocoax: debug
 ```
+
+## Support
+
+This integration is maintained in my free time. Sponsorship directly funds new device support and faster updates.
+
+[![Buy Me a Coffee](https://img.shields.io/badge/buy%20me%20a%20coffee-donate-yellow.svg)](https://buymeacoffee.com/DYks67r)

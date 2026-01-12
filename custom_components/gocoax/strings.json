@@ -3,7 +3,7 @@
     "step": {
       "user": {
         "title": "Connect to goCoax Adapter",
-        "description": "Enter the connection details for your goCoax MoCA adapter.",
+        "description": "Enter the connection details for your goCoax MoCA adapter. [☕ Tip the Author](https://buymeacoffee.com/DYks67r)",
         "data": {
           "host": "Host",
           "username": "Username",
