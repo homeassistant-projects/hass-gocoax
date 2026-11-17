@@ -26,7 +26,11 @@ async def async_setup_entry(hass: HomeAssistant, entry: GoCoaxConfigEntry) -> bo
     coordinator = GoCoaxCoordinator(hass, entry)
 
     # fetch initial data
-    await coordinator.async_config_entry_first_refresh()
+    try:
+        await coordinator.async_config_entry_first_refresh()
+    except Exception:
+        await coordinator.async_shutdown()
+        raise
 
     # store coordinator in runtime data
     entry.runtime_data = coordinator

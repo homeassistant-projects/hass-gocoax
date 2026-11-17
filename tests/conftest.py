@@ -20,6 +20,43 @@ MOCK_PASSWORD = "gocoax"
 MOCK_MAC = "a4:81:7a:49:e3:dd"
 
 
+@pytest.fixture(autouse=True)
+def enable_integration_tests(enable_custom_integrations):  # noqa: ARG001
+    """Load this checkout through Home Assistant's custom integration loader."""
+    yield
+
+
+@pytest.fixture(autouse=True)
+def mocked_http_sessions():
+    """HA tests never create real sockets; transport is tested in tests_client."""
+    sessions = []
+
+    def create(*_args, **_kwargs):
+        session = MagicMock()
+        session.closed = False
+        session.close = AsyncMock()
+        sessions.append(session)
+        return session
+
+    with (
+        patch(
+            "custom_components.gocoax.config_flow.async_create_clientsession",
+            side_effect=create,
+        ),
+        patch(
+            "custom_components.gocoax.coordinator.async_create_clientsession",
+            side_effect=create,
+        ),
+    ):
+        yield sessions
+
+
+@pytest.fixture(autouse=True)
+def mocked_background_polling(mock_coordinator_client):
+    """A successful config flow may schedule setup; never query a real device."""
+    yield mock_coordinator_client
+
+
 @pytest.fixture
 def mock_config_entry_data() -> dict:
     """Return mock config entry data."""

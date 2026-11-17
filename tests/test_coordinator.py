@@ -10,6 +10,7 @@ from homeassistant.const import CONF_HOST, CONF_PASSWORD, CONF_USERNAME
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryAuthFailed
 from homeassistant.helpers.update_coordinator import UpdateFailed
+from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 from custom_components.gocoax.const import DEFAULT_SCAN_INTERVAL, DOMAIN
 from custom_components.gocoax.coordinator import GoCoaxCoordinator
@@ -28,7 +29,7 @@ def mock_entry(hass: HomeAssistant):
     """Create mock config entry."""
     from homeassistant import config_entries
 
-    entry = config_entries.ConfigEntry(
+    entry = MockConfigEntry(
         version=1,
         minor_version=1,
         domain=DOMAIN,
@@ -54,12 +55,11 @@ async def test_coordinator_update_success(
     """Test successful coordinator update."""
     coordinator = GoCoaxCoordinator(hass, mock_entry)
 
-    await coordinator.async_config_entry_first_refresh()
+    status = await coordinator._async_update_data()
 
-    assert coordinator.data is not None
-    assert coordinator.data.mac_address == MOCK_MAC
-    assert coordinator.data.link_status is True
-    assert coordinator.data.moca_version == "2.5"
+    assert status.mac_address == MOCK_MAC
+    assert status.link_status is True
+    assert status.moca_version == "2.5"
 
 
 async def test_coordinator_auth_error(
@@ -76,7 +76,7 @@ async def test_coordinator_auth_error(
         coordinator = GoCoaxCoordinator(hass, mock_entry)
 
         with pytest.raises(ConfigEntryAuthFailed):
-            await coordinator.async_config_entry_first_refresh()
+            await coordinator._async_update_data()
 
 
 async def test_coordinator_connection_error(
@@ -95,7 +95,7 @@ async def test_coordinator_connection_error(
         coordinator = GoCoaxCoordinator(hass, mock_entry)
 
         with pytest.raises(UpdateFailed):
-            await coordinator.async_config_entry_first_refresh()
+            await coordinator._async_update_data()
 
 
 async def test_coordinator_timeout_with_stale_data(
@@ -115,11 +115,12 @@ async def test_coordinator_timeout_with_stale_data(
                 GoCoaxTimeoutError("Timeout"),
             ]
         )
+        mock_client.close = AsyncMock()
 
-        coordinator = GoCoaxCoordinator(hass, mock_entry)
-
-        # first update succeeds
-        await coordinator.async_config_entry_first_refresh()
+        # First refresh runs through the real config-entry setup state machine.
+        assert await hass.config_entries.async_setup(mock_entry.entry_id)
+        await hass.async_block_till_done()
+        coordinator = mock_entry.runtime_data
         assert coordinator.data is not None
         assert coordinator.data.mac_address == MOCK_MAC
 
@@ -127,6 +128,7 @@ async def test_coordinator_timeout_with_stale_data(
         await coordinator.async_refresh()
         # should still have data (stale)
         assert coordinator.data is not None
+    assert not coordinator.last_update_success
 
 
 async def test_coordinator_update_interval(

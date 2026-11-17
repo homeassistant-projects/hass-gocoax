@@ -23,6 +23,20 @@ Sensors for monitoring [goCoax](https://gocoax.com/) MoCA adapters and the assoc
 
 **NOTE: To ensure sensor data is properly read from the adapters, it is recommended that you update to the LATEST FIRMWARE offered by [goCoax Support](https://www.gocoax.com/support), or one of the firmwares listed in the above table. However, upgrading firmware MAY reset settings on the adapter.**
 
+### MA2500D firmware 2.0.16.0 validation
+
+The HTTP client and numeric status decoding have been tested against two MA2500D
+adapters reporting firmware 2.0.16.0. The firmware uses POST requests for status
+getters, including paths ending in `/GET`, and requires its CSRF session cookie.
+The versions/models in the table above were listed previously; the updated client
+still needs hardware regression testing on those other firmware/model combinations.
+
+Requests are restricted to reviewed status pages and getter operations. No
+configuration, reboot, firmware upload or password/key getter is called. Management
+authentication uses unencrypted HTTP; use a trusted network and a unique password.
+Unavailable optional values remain unknown, and connection failures mark entities
+unavailable. Frequency-band and encryption sensors describe configured flags.
+
 ## Installation
 
 Make sure [Home Assistant Community Store (HACS)](https://github.com/custom-components/hacs) is installed. This integration is part of the default HACS store (though can also be added manually using repository: `rsnodgrass/hass-gocoax`)
@@ -72,6 +86,10 @@ The following information is shown in the device details:
 - Firmware version
 - Configuration URL (link to adapter web UI)
 
+Model and firmware image fields remain unknown when no verified metadata source
+is available. An embedded SoC SDK version is not treated as the firmware image
+version. SNR and power fields likewise remain unknown without a verified source.
+
 ## Options
 
 After initial setup, you can configure:
@@ -95,8 +113,8 @@ The following features are planned for future releases:
 
 Contributions are welcome! If you have a goCoax adapter and want to help improve the integration:
 
-1. Enable debug logging to capture raw API responses
-2. Share endpoint data (with MAC addresses redacted) to help improve parsing
+1. Collect status getter responses locally only when needed; normal debug logging does not emit raw responses
+2. Anonymize MAC addresses and remove credentials, session cookies, CSRF tokens, keys and other identifiers before sharing endpoint data
 3. Report issues or submit pull requests on GitHub
 
 ```yaml
@@ -104,6 +122,23 @@ logger:
   logs:
     custom_components.gocoax: debug
 ```
+
+### Regression tests
+
+The portable client suite uses a loopback HTTP server and anonymized two-adapter
+fixtures. HA tests use an isolated test core with mocked device transport; they
+do not connect to a running HA instance.
+
+```sh
+python -m pip install aiohttp pytest pytest-asyncio ruff
+python -m pytest tests_client -q
+python -m ruff check custom_components tests_client tools
+# In a separate Linux environment using Python 3.14:
+python -m pip install 'homeassistant==2026.10.4' 'pytest-homeassistant-custom-component==0.13.375'
+python -m pytest tests -q
+```
+
+See [VALIDATION.md](VALIDATION.md) for the hardware/test baseline and limitations.
 
 ## Support
 

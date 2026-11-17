@@ -5,6 +5,7 @@ from __future__ import annotations
 import pytest
 from homeassistant.const import CONF_HOST, CONF_PASSWORD, CONF_USERNAME
 from homeassistant.core import HomeAssistant
+from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 from custom_components.gocoax.const import DOMAIN
 from custom_components.gocoax.diagnostics import async_get_config_entry_diagnostics
@@ -23,7 +24,7 @@ def mock_entry_with_coordinator(
 
     from homeassistant import config_entries
 
-    entry = config_entries.ConfigEntry(
+    entry = MockConfigEntry(
         version=1,
         minor_version=1,
         domain=DOMAIN,
@@ -91,4 +92,5 @@ async def test_diagnostics_includes_coordinator_info(
 
     assert "coordinator" in diagnostics
     assert diagnostics["coordinator"]["last_update_success"] is True
-    assert diagnostics["coordinator"]["host"] == MOCK_HOST
+    assert diagnostics["coordinator"]["host"] == "**REDACTED**"
+    assert MOCK_HOST not in str(diagnostics)
