@@ -8,6 +8,7 @@ from homeassistant import config_entries
 from homeassistant.const import CONF_HOST, CONF_PASSWORD, CONF_USERNAME
 from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResultType
+from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 from custom_components.gocoax.const import DOMAIN
 from custom_components.gocoax.pygocoax.exceptions import (
@@ -60,6 +61,7 @@ async def test_user_flow_cannot_connect(
         mock_client.get_mac_address = AsyncMock(
             side_effect=GoCoaxConnectionError("Connection failed")
         )
+        mock_client.close = AsyncMock()
 
         result = await hass.config_entries.flow.async_init(
             DOMAIN, context={"source": config_entries.SOURCE_USER}
@@ -89,6 +91,7 @@ async def test_user_flow_invalid_auth(
         mock_client.get_mac_address = AsyncMock(
             side_effect=GoCoaxAuthError("Auth failed")
         )
+        mock_client.close = AsyncMock()
 
         result = await hass.config_entries.flow.async_init(
             DOMAIN, context={"source": config_entries.SOURCE_USER}
@@ -114,7 +117,7 @@ async def test_user_flow_duplicate(
 ) -> None:
     """Test user flow when adapter is already configured."""
     # create existing entry
-    entry = config_entries.ConfigEntry(
+    entry = MockConfigEntry(
         version=1,
         minor_version=1,
         domain=DOMAIN,
@@ -147,7 +150,7 @@ async def test_options_flow(
     mock_config_entry_data,
 ) -> None:
     """Test options flow."""
-    entry = config_entries.ConfigEntry(
+    entry = MockConfigEntry(
         version=1,
         minor_version=1,
         domain=DOMAIN,

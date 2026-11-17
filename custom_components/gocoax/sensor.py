@@ -14,7 +14,7 @@ from homeassistant.components.sensor import (
     SensorStateClass,
 )
 from homeassistant.const import EntityCategory, UnitOfDataRate, UnitOfFrequency
-from homeassistant.core import HomeAssistant
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.device_registry import CONNECTION_NETWORK_MAC, DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
@@ -192,6 +192,42 @@ async def async_setup_entry(
 
     async_add_entities(entities)
 
+    known_peers = (
+        {rate.target_mac for rate in coordinator.data.phy_rates}
+        if coordinator.data
+        else set()
+    )
+
+    @callback
+    def add_new_peers() -> None:
+        if not coordinator.data:
+            return
+        added = []
+        for rate in coordinator.data.phy_rates:
+            if rate.target_mac in known_peers:
+                continue
+            known_peers.add(rate.target_mac)
+            for direction in ("tx", "rx"):
+                added.append(
+                    GoCoaxPhyRateSensor(
+                        coordinator,
+                        GoCoaxSensorEntityDescription(
+                            key=f"phy_{direction}",
+                            translation_key=f"phy_{direction}_rate",
+                            device_class=SensorDeviceClass.DATA_RATE,
+                            native_unit_of_measurement=UnitOfDataRate.MEGABITS_PER_SECOND,
+                            state_class=SensorStateClass.MEASUREMENT,
+                            value_fn=lambda _data: None,
+                        ),
+                        rate.target_mac,
+                        direction,
+                    )
+                )
+        if added:
+            async_add_entities(added)
+
+    entry.async_on_unload(coordinator.async_add_listener(add_new_peers))
+
 
 class GoCoaxSensor(CoordinatorEntity[GoCoaxCoordinator], SensorEntity):
     """Sensor entity for goCoax MoCA adapter."""
@@ -264,3 +300,16 @@ class GoCoaxPhyRateSensor(GoCoaxSensor):
         short_mac = self._target_mac.replace(":", "")[-6:]
         direction_label = "TX" if self._direction == "tx" else "RX"
         return f"PHY {direction_label} Rate ({short_mac})"
+
+    @property
+    def available(self) -> bool:
+        return super().available and self.native_value is not None
+
+    @property
+    def native_value(self) -> int | None:
+        if not self.coordinator.data:
+            return None
+        for rate in self.coordinator.data.phy_rates:
+            if rate.target_mac == self._target_mac:
+                return rate.tx_rate if self._direction == "tx" else rate.rx_rate
+        return None

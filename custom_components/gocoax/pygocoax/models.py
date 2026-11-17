@@ -27,8 +27,8 @@ class NetworkPeer:
     node_id: int
     mac_address: str
     moca_version: str
-    tx_phy_rate: int = 0  # Mbps
-    rx_phy_rate: int = 0  # Mbps
+    tx_phy_rate: int | None = None  # Mbps; unavailable is not zero
+    rx_phy_rate: int | None = None
 
 
 @dataclass
@@ -37,8 +37,8 @@ class PhyRate:
 
     source_mac: str
     target_mac: str
-    tx_rate: int  # Mbps
-    rx_rate: int  # Mbps
+    tx_rate: int | None  # Mbps
+    rx_rate: int | None  # Mbps
 
 
 @dataclass

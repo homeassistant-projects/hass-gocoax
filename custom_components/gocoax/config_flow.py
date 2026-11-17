@@ -6,6 +6,7 @@ import logging
 from typing import Any
 
 import voluptuous as vol
+from aiohttp import DummyCookieJar
 from homeassistant.config_entries import (
     ConfigEntry,
     ConfigFlow,
@@ -14,7 +15,7 @@ from homeassistant.config_entries import (
 )
 from homeassistant.const import CONF_HOST, CONF_PASSWORD, CONF_USERNAME
 from homeassistant.core import callback
-from homeassistant.helpers.aiohttp_client import async_get_clientsession
+from homeassistant.helpers.aiohttp_client import async_create_clientsession
 from homeassistant.helpers.selector import (
     NumberSelector,
     NumberSelectorConfig,
@@ -34,7 +35,12 @@ from .const import (
     MIN_SCAN_INTERVAL,
 )
 from .pygocoax import GoCoaxClient
-from .pygocoax.exceptions import GoCoaxAuthError, GoCoaxConnectionError
+from .pygocoax.exceptions import (
+    GoCoaxAuthError,
+    GoCoaxConnectionError,
+    GoCoaxParseError,
+    GoCoaxTimeoutError,
+)
 
 LOG = logging.getLogger(__name__)
 
@@ -158,26 +164,37 @@ class GoCoaxConfigFlow(ConfigFlow, domain=DOMAIN):
 
     async def _async_validate_connection(self) -> str | None:
         """Validate connection to goCoax adapter."""
-        session = async_get_clientsession(self.hass)
-        client = GoCoaxClient(
-            host=self._host,
-            username=self._username,
-            password=self._password,
-            session=session,
+        session = async_create_clientsession(
+            self.hass, cookie_jar=DummyCookieJar(), trust_env=False
         )
-
+        client = None
         try:
+            client = GoCoaxClient(
+                host=self._host,
+                username=self._username,
+                password=self._password,
+                session=session,
+            )
             self._mac_address = await client.get_mac_address()
             if not self._mac_address:
                 return "cannot_connect"
             return None
         except GoCoaxAuthError:
             return "invalid_auth"
-        except GoCoaxConnectionError:
+        except (
+            GoCoaxConnectionError,
+            GoCoaxParseError,
+            GoCoaxTimeoutError,
+            ValueError,
+        ):
             return "cannot_connect"
         except Exception:
-            LOG.exception("Unexpected error during connection validation")
+            LOG.error("Unexpected error during connection validation; details withheld")
             return "unknown"
+        finally:
+            if client is not None:
+                await client.close()
+            await session.close()
 
 
 class GoCoaxOptionsFlow(OptionsFlow):

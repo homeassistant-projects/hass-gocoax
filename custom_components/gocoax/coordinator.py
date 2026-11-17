@@ -6,11 +6,12 @@ import logging
 from datetime import timedelta
 from typing import TYPE_CHECKING
 
+from aiohttp import DummyCookieJar
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_HOST, CONF_PASSWORD, CONF_USERNAME
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryAuthFailed
-from homeassistant.helpers.aiohttp_client import async_get_clientsession
+from homeassistant.helpers.aiohttp_client import async_create_clientsession
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .const import (
@@ -56,8 +57,11 @@ class GoCoaxCoordinator(DataUpdateCoordinator[AdapterStatus]):
             config_entry=entry,
         )
 
-        # create client with shared session
-        session = async_get_clientsession(hass)
+        # Keep each adapter's HTTP authentication/session state isolated.
+        session = async_create_clientsession(
+            hass, cookie_jar=DummyCookieJar(), trust_env=False
+        )
+        self._session = session
         self._client = GoCoaxClient(
             host=self._host,
             username=self._username,
@@ -85,10 +89,7 @@ class GoCoaxCoordinator(DataUpdateCoordinator[AdapterStatus]):
         try:
             status = await self._client.get_status()
             self._consecutive_errors = 0
-            LOG.debug(
-                f"Updated goCoax data: mac={status.mac_address}, "
-                f"link={status.link_status}, moca={status.moca_version}"
-            )
+            LOG.debug("Updated goCoax monitoring data successfully")
             return status
 
         except GoCoaxAuthError as err:
@@ -108,9 +109,6 @@ class GoCoaxCoordinator(DataUpdateCoordinator[AdapterStatus]):
                 raise UpdateFailed(
                     f"Too many consecutive timeouts for goCoax at {self._host}"
                 ) from err
-            # return stale data if available
-            if self.data:
-                return self.data
             raise UpdateFailed(f"Timeout connecting to goCoax at {self._host}") from err
 
         except GoCoaxConnectionError as err:
@@ -123,17 +121,15 @@ class GoCoaxCoordinator(DataUpdateCoordinator[AdapterStatus]):
                 raise UpdateFailed(
                     f"Too many consecutive errors for goCoax at {self._host}"
                 ) from err
-            # return stale data if available
-            if self.data:
-                return self.data
             raise UpdateFailed(f"Cannot connect to goCoax at {self._host}") from err
 
         except Exception as err:
             self._consecutive_errors += 1
-            LOG.exception(f"Unexpected error fetching goCoax data from {self._host}")
-            raise UpdateFailed(f"Unexpected error: {err}") from err
+            LOG.error("Unexpected monitoring error; response details withheld")
+            raise UpdateFailed("Unexpected monitoring error") from err
 
     async def async_shutdown(self) -> None:
         """Shutdown the coordinator."""
         await super().async_shutdown()
-        # client uses shared session, don't close it
+        await self._client.close()
+        await self._session.close()
